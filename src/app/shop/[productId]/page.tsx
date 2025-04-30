@@ -8,6 +8,8 @@ import { redirect, useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsClick } from "@/app/utils/slice";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const page = () => {
   const { productId } = useParams();
@@ -89,7 +91,13 @@ const page = () => {
           </div>
         </div>
       ) : (
-        "Please wait..."
+        <div className="flex lg:flex-row flex-col gap-13 w-full">
+          <Skeleton width={400} height={400} />
+          <div>
+            <Skeleton width={400} height={50} className="mb-10" />
+            <Skeleton width={400} />
+          </div>
+        </div>
       )}
     </div>
   );

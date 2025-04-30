@@ -12,9 +12,10 @@ const Cart = () => {
 
   useEffect(() => {
     const local = localStorage.getItem("product");
-
     if (local) {
       setProducts(JSON.parse(local));
+    } else {
+      setProducts([]);
     }
   }, [isClick]);
 

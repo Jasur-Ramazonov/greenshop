@@ -10,6 +10,8 @@ import { RootState } from "@/app/utils/store";
 import { redirect } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { createOrder, getUsers } from "@/app/admin/Functions";
+import "react-loading-skeleton/dist/skeleton.css";
+import Skeleton from "react-loading-skeleton";
 
 enum Status {
   OPEN = "OPEN",
@@ -29,6 +31,7 @@ const ShoppingCart = () => {
   const [location, setLocation] = useState(" ");
   const [phone, setPhone] = useState(" ");
   const { user } = useUser();
+  const [isHas, setIsHas] = useState(true);
 
   const getCurrentDate = () => {
     const today = new Date();
@@ -47,6 +50,8 @@ const ShoppingCart = () => {
     const localProducts = localStorage.getItem("product");
     if (localProducts) {
       setProducts(JSON.parse(localProducts));
+    } else {
+      setIsHas(false);
     }
   }, []);
 
@@ -58,6 +63,7 @@ const ShoppingCart = () => {
       setCount(counts);
     } else {
       setTotal(0);
+      setIsHas(false);
     }
   }, [products]);
 
@@ -150,12 +156,15 @@ const ShoppingCart = () => {
                       <button
                         onClick={() => {
                           products.splice(i, 1);
-                          console.log(products);
                           setProducts([...products]);
-                          localStorage.setItem(
-                            "product",
-                            JSON.stringify([...products])
-                          );
+                          if (products[0]) {
+                            localStorage.setItem(
+                              "product",
+                              JSON.stringify([...products])
+                            );
+                          } else {
+                            localStorage.removeItem("product");
+                          }
                           dispatch(setIsClick(!isClick));
                         }}
                         className="cursor-pointer"
@@ -167,8 +176,15 @@ const ShoppingCart = () => {
                 );
               })}
             </div>
+          ) : isHas ? (
+            <div className="flex flex-col gap-2">
+              <Skeleton height={90} />
+              <Skeleton height={90} />
+              <Skeleton height={90} />
+              <Skeleton height={90} />
+            </div>
           ) : (
-            "please wait..."
+            "Product Not found"
           )}
         </div>
         <div className="flex flex-col xl:w-1/3 w-full">
@@ -260,7 +276,7 @@ const ShoppingCart = () => {
             </button>
             <button
               onClick={() => {
-                if (!user || products) {
+                if (!user || !products[0]) {
                   alert("iltimos ro'yxatdan o'ting yoki mahsulot tanlang");
                   return;
                 }

@@ -60,8 +60,6 @@ export async function deleteProduct(id: number) {
 }
 
 export async function editProduct(data: Product) {
-  console.log("salom");
-
   return supabase.from("product").update([data]).eq("id", data.id);
 }
 

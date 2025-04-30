@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./utils/store";
 import clsx from "clsx";
 import { setCategory } from "./utils/slice";
+import Skeleton from "react-loading-skeleton";
 
 const Categories = () => {
   const [categories, setCotegory] = useState<Cotegory[]>([]);
@@ -27,33 +28,42 @@ const Categories = () => {
 
   return (
     <div>
-      {categories?.map((categ, i) => {
-        return (
-          <label
-            key={i}
-            className={clsx(
-              "flex justify-between w-full ease-linear duration-150 hover:text-[#46A358] p-2 cursor-pointer",
-              category === categ.name ? "text-[#46a358]" : ""
-            )}
-          >
-            <button
-              onClick={() => {
-                dispatch(setCategory(categ.name));
-              }}
+      {categories[0] ? (
+        categories?.map((categ, i) => {
+          return (
+            <label
+              key={i}
+              className={clsx(
+                "flex justify-between w-full ease-linear duration-150 hover:text-[#46A358] p-2 cursor-pointer",
+                category === categ.name ? "text-[#46a358]" : ""
+              )}
             >
-              {categ.name}
-            </button>
-            <p>
-              (
-              {
-                products?.filter((product) => product.cotegory === categ.name)
-                  .length
-              }
-              )
-            </p>
-          </label>
-        );
-      })}
+              <button
+                onClick={() => {
+                  dispatch(setCategory(categ.name));
+                }}
+              >
+                {categ.name}
+              </button>
+              <p>
+                (
+                {
+                  products?.filter((product) => product.cotegory === categ.name)
+                    .length
+                }
+                )
+              </p>
+            </label>
+          );
+        })
+      ) : (
+        <div className="flex flex-col gap-2">
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+        </div>
+      )}
     </div>
   );
 };
